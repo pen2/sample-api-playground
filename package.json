@@ -1,5 +1,5 @@
 {
-  "name": "vercel-time-api-playground",
+  "name": "sample-api-playground",
   "version": "1.0.0",
   "private": true,
   "description": "Minimal Vercel API that returns the current time as JSON.",

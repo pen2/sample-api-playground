@@ -1,4 +1,4 @@
-# vercel-time-api-playground
+# sample-api-playground
 
 Vercel で動く最小の JSON API サンプルです。
 
