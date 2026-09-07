@@ -48,18 +48,18 @@ assert.equal(
 );
 
 const studioSandboxResponse = invoke({
-  origin: "https://65qmp3w0cv.studioframesandbox.com"
+  origin: "https://65qmp3w0ov.studioiframesandbox.com"
 });
 assert.equal(
   studioSandboxResponse.headers["Access-Control-Allow-Origin"],
-  "https://65qmp3w0cv.studioframesandbox.com"
+  "https://65qmp3w0ov.studioiframesandbox.com"
 );
 
 const rejectedResponse = invoke({ origin: "https://evil-preview.studio.site.example.com" });
 assert.equal(rejectedResponse.headers["Access-Control-Allow-Origin"], undefined);
 
 const rejectedSandboxResponse = invoke({
-  origin: "https://studioframesandbox.com.example.com"
+  origin: "https://studioiframesandbox.com.example.com"
 });
 assert.equal(
   rejectedSandboxResponse.headers["Access-Control-Allow-Origin"],
