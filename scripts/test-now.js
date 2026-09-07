@@ -1,44 +1,65 @@
+const assert = require("node:assert/strict");
 const handler = require("../api/now");
 
-let statusCode = null;
-const headers = {};
-let jsonBody = null;
+function invoke({ method = "GET", origin } = {}) {
+  let statusCode = null;
+  const headers = {};
+  let jsonBody = null;
+  let ended = false;
 
-const res = {
-  setHeader(name, value) {
-    headers[name] = value;
-  },
-  status(code) {
-    statusCode = code;
-    return this;
-  },
-  json(body) {
-    jsonBody = body;
-    return this;
-  }
-};
+  const res = {
+    setHeader(name, value) {
+      headers[name] = value;
+    },
+    status(code) {
+      statusCode = code;
+      return this;
+    },
+    json(body) {
+      jsonBody = body;
+      return this;
+    },
+    end() {
+      ended = true;
+      return this;
+    }
+  };
 
-handler({}, res);
-
-if (statusCode !== 200) {
-  throw new Error(`Expected status 200, received ${statusCode}`);
+  handler({ method, headers: origin ? { origin } : {} }, res);
+  return { statusCode, headers, jsonBody, ended };
 }
 
-if (headers["Content-Type"] !== "application/json; charset=utf-8") {
-  throw new Error("Unexpected content type");
-}
+const response = invoke({ origin: "https://example.preview.studio.site" });
 
-if (!jsonBody || jsonBody.ok !== true) {
-  throw new Error("Response body is missing ok=true");
-}
+assert.equal(response.statusCode, 200);
+assert.equal(response.headers["Content-Type"], "application/json; charset=utf-8");
+assert.equal(
+  response.headers["Access-Control-Allow-Origin"],
+  "https://example.preview.studio.site"
+);
+assert.equal(response.jsonBody.ok, true);
+assert.equal(Number.isNaN(Date.parse(response.jsonBody.now)), false);
+assert.equal(typeof response.jsonBody.unixMs, "number");
 
-if (typeof jsonBody.now !== "string" || Number.isNaN(Date.parse(jsonBody.now))) {
-  throw new Error("Response body now is not a valid ISO timestamp");
-}
+const productionResponse = invoke({ origin: "https://goodshare.jp" });
+assert.equal(
+  productionResponse.headers["Access-Control-Allow-Origin"],
+  "https://goodshare.jp"
+);
 
-if (typeof jsonBody.unixMs !== "number") {
-  throw new Error("Response body unixMs is not a number");
-}
+const rejectedResponse = invoke({ origin: "https://evil-preview.studio.site.example.com" });
+assert.equal(rejectedResponse.headers["Access-Control-Allow-Origin"], undefined);
+
+const preflightResponse = invoke({
+  method: "OPTIONS",
+  origin: "https://project.preview.studio.site"
+});
+assert.equal(preflightResponse.statusCode, 204);
+assert.equal(preflightResponse.ended, true);
+assert.equal(
+  preflightResponse.headers["Access-Control-Allow-Origin"],
+  "https://project.preview.studio.site"
+);
 
 console.log("test passed");
-console.log(JSON.stringify(jsonBody, null, 2));
+console.log(JSON.stringify(response.jsonBody, null, 2));

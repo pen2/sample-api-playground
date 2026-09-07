@@ -7,6 +7,12 @@ Vercel で動く最小の JSON API サンプルです。
 - `GET /api/now`
 - `/` にアクセスすると `/api/now` にリダイレクトします
 
+ブラウザからのアクセスは、次の Origin に対して CORS を許可しています。
+
+- `https://goodshare.jp`
+- `https://preview.studio.site`
+- `https://*.preview.studio.site`
+
 ## Response
 
 ```json
