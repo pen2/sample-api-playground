@@ -13,7 +13,9 @@ function isAllowedOrigin(origin) {
     return (
       url.hostname === "goodshare.jp" ||
       url.hostname === "preview.studio.site" ||
-      url.hostname.endsWith(".preview.studio.site")
+      url.hostname.endsWith(".preview.studio.site") ||
+      url.hostname === "studioframesandbox.com" ||
+      url.hostname.endsWith(".studioframesandbox.com")
     );
   } catch {
     return false;

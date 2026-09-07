@@ -12,6 +12,8 @@ Vercel で動く最小の JSON API サンプルです。
 - `https://goodshare.jp`
 - `https://preview.studio.site`
 - `https://*.preview.studio.site`
+- `https://studioframesandbox.com`
+- `https://*.studioframesandbox.com`
 
 ## Response
 
