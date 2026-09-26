@@ -177,7 +177,7 @@
 
           <label>
             Edit token
-            <input id="editToken" name="editToken" type="password" autocomplete="current-password" required>
+            <input id="editToken" name="editToken" type="password" autocomplete="off" spellcheck="false" required>
           </label>
 
           <div class="actions">
@@ -252,6 +252,7 @@
           }
 
           populate(body);
+          form.elements.editToken.value = "";
           showStatus("保存しました。APIへ反映されています。", "success");
         } catch (error) {
           showStatus(error.message, "error");
