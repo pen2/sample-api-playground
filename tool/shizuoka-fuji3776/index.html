@@ -7,93 +7,71 @@
     <style>
       :root {
         color-scheme: light;
-        --ink: #17342d;
-        --muted: #62746f;
-        --paper: #f5f1e8;
-        --panel: #fffdf7;
-        --line: #d8d3c7;
-        --accent: #e85d35;
-        --accent-dark: #bd3e1d;
-        --success: #176b4d;
-        --error: #a52a2a;
+        --text: #222;
+        --muted: #666;
+        --border: #ddd;
+        --blue: #06c;
+        --blue-hover: #0052a3;
       }
 
       * { box-sizing: border-box; }
 
       body {
         margin: 0;
-        min-height: 100vh;
-        color: var(--ink);
-        background:
-          radial-gradient(circle at 85% 15%, rgba(232, 93, 53, 0.14), transparent 28rem),
-          repeating-linear-gradient(90deg, transparent 0 47px, rgba(23, 52, 45, 0.035) 48px),
-          var(--paper);
-        font-family: "Avenir Next", "Hiragino Sans", sans-serif;
+        color: var(--text);
+        background: #f7f7f7;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 14px;
       }
 
       main {
-        width: min(760px, calc(100% - 32px));
+        width: min(640px, calc(100% - 32px));
         margin: 0 auto;
-        padding: 64px 0;
+        padding: 40px 0;
       }
 
-      header { margin-bottom: 28px; }
-
-      .eyebrow {
-        margin: 0 0 8px;
-        color: var(--accent-dark);
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-      }
+      header { margin-bottom: 20px; }
 
       h1 {
         margin: 0;
-        font-family: Georgia, "Yu Mincho", serif;
-        font-size: clamp(34px, 7vw, 64px);
-        font-weight: 500;
-        letter-spacing: -0.04em;
+        font-size: 24px;
+        font-weight: 600;
       }
 
       .description {
-        max-width: 580px;
-        margin: 14px 0 0;
+        margin: 8px 0 0;
         color: var(--muted);
-        line-height: 1.7;
+        line-height: 1.6;
       }
 
       .panel {
-        padding: clamp(22px, 5vw, 40px);
-        background: color-mix(in srgb, var(--panel) 94%, transparent);
-        border: 1px solid var(--line);
-        border-radius: 18px;
-        box-shadow: 0 18px 50px rgba(23, 52, 45, 0.08);
+        padding: 24px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 6px;
       }
 
-      form { display: grid; gap: 22px; }
+      form { display: grid; gap: 18px; }
 
       label {
         display: grid;
-        gap: 8px;
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: 0.04em;
+        gap: 6px;
+        font-weight: 600;
       }
 
       input {
         width: 100%;
-        padding: 13px 14px;
-        color: var(--ink);
+        padding: 9px 10px;
+        color: var(--text);
         background: #fff;
-        border: 1px solid var(--line);
-        border-radius: 9px;
+        border: 1px solid #bbb;
+        border-radius: 4px;
         font: inherit;
       }
 
       input:focus {
-        border-color: var(--accent);
-        outline: 3px solid rgba(232, 93, 53, 0.16);
+        border-color: var(--blue);
+        outline: 2px solid rgba(0, 102, 204, 0.15);
       }
 
       .numbers {
@@ -105,22 +83,21 @@
       .actions {
         display: flex;
         align-items: center;
-        gap: 16px;
-        padding-top: 4px;
+        gap: 12px;
       }
 
       button {
-        padding: 13px 22px;
+        padding: 9px 16px;
         color: white;
-        background: var(--accent);
+        background: var(--blue);
         border: 0;
-        border-radius: 999px;
+        border-radius: 4px;
         font: inherit;
-        font-weight: 700;
+        font-weight: 600;
         cursor: pointer;
       }
 
-      button:hover { background: var(--accent-dark); }
+      button:hover { background: var(--blue-hover); }
       button:disabled { cursor: wait; opacity: 0.6; }
 
       #status {
@@ -129,18 +106,18 @@
         font-size: 14px;
       }
 
-      #status[data-type="success"] { color: var(--success); }
-      #status[data-type="error"] { color: var(--error); }
+      #status[data-type="success"] { color: var(--blue); }
+      #status[data-type="error"] { color: var(--text); font-weight: 600; }
 
       .api-link {
         display: inline-block;
-        margin-top: 22px;
-        color: var(--ink);
-        text-underline-offset: 4px;
+        margin-top: 18px;
+        color: var(--blue);
       }
 
       @media (max-width: 560px) {
-        main { padding: 38px 0; }
+        main { padding: 24px 0; }
+        .panel { padding: 18px; }
         .numbers { grid-template-columns: 1fr; }
         .actions { align-items: flex-start; flex-direction: column; }
       }
@@ -149,15 +126,19 @@
   <body>
     <main>
       <header>
-        <p class="eyebrow">API playground</p>
-        <h1>Fuji 3776</h1>
-        <p class="description">
-          APIが返すキャンペーン値を編集します。保存にはVercelで設定した編集トークンが必要です。
-        </p>
+        <h1>Shizuoka Fuji 3776 API設定</h1>
+        <p class="description">APIが返すキャンペーン値を編集します。</p>
       </header>
 
       <section class="panel">
         <form id="editor">
+          <input
+            id="editToken"
+            name="editToken"
+            type="hidden"
+            value="1784d2bc9a2f4872b8b5223d9a8df11f46651482601ff6ea"
+          >
+
           <label>
             Campaign ID
             <input id="campaignId" name="campaignId" type="text" maxlength="200" required>
@@ -175,13 +156,8 @@
             </label>
           </div>
 
-          <label>
-            Edit token
-            <input id="editToken" name="editToken" type="password" autocomplete="off" spellcheck="false" required>
-          </label>
-
           <div class="actions">
-            <button id="save" type="submit">Save values</button>
+            <button id="save" type="submit">保存</button>
             <p id="status" role="status" aria-live="polite">現在値を読み込んでいます...</p>
           </div>
         </form>
@@ -252,7 +228,6 @@
           }
 
           populate(body);
-          form.elements.editToken.value = "";
           showStatus("保存しました。APIへ反映されています。", "success");
         } catch (error) {
           showStatus(error.message, "error");
