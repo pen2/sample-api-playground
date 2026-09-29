@@ -61,8 +61,7 @@ assert.equal(
   const environmentKeys = [
     "BLOB_READ_WRITE_TOKEN",
     "BLOB_STORE_ID",
-    "VERCEL_OIDC_TOKEN",
-    "SHIZUOKA_FUJI3776_EDIT_TOKEN"
+    "VERCEL_OIDC_TOKEN"
   ];
   const originalEnvironment = Object.fromEntries(
     environmentKeys.map((key) => [key, process.env[key]])
@@ -84,8 +83,9 @@ assert.equal(
     );
 
     const postResponse = await invoke({ method: "POST", body: DEFAULT_VALUE });
-    assert.equal(postResponse.statusCode, 503);
-    assert.equal(postResponse.jsonBody.error, "The edit token is not configured.");
+    assert.equal(postResponse.statusCode, 405);
+    assert.equal(postResponse.headers.Allow, "GET, OPTIONS");
+    assert.equal(postResponse.jsonBody.error, "Method not allowed.");
   } finally {
     for (const key of environmentKeys) {
       if (originalEnvironment[key] === undefined) {

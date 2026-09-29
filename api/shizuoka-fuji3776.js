@@ -1,5 +1,4 @@
-const crypto = require("node:crypto");
-const { get, put } = require("@vercel/blob");
+const { get } = require("@vercel/blob");
 const { setCorsHeaders } = require("../lib/cors");
 const { DEFAULT_VALUE, validateValue } = require("../lib/shizuoka-fuji3776");
 
@@ -10,23 +9,6 @@ function hasBlobConfiguration() {
     process.env.BLOB_READ_WRITE_TOKEN ||
       (process.env.BLOB_STORE_ID && process.env.VERCEL_OIDC_TOKEN)
   );
-}
-
-function isAuthorized(req) {
-  const expectedToken = process.env.SHIZUOKA_FUJI3776_EDIT_TOKEN;
-  const authorization = req.headers?.authorization || "";
-  const suppliedToken = authorization.startsWith("Bearer ")
-    ? authorization.slice("Bearer ".length)
-    : "";
-
-  if (!expectedToken || !suppliedToken) {
-    return false;
-  }
-
-  const expected = Buffer.from(expectedToken);
-  const supplied = Buffer.from(suppliedToken);
-
-  return expected.length === supplied.length && crypto.timingSafeEqual(expected, supplied);
 }
 
 async function readValue() {
@@ -53,17 +35,8 @@ async function readValue() {
   return validated.value;
 }
 
-async function writeValue(value) {
-  await put(BLOB_PATHNAME, JSON.stringify(value), {
-    access: "private",
-    allowOverwrite: true,
-    contentType: "application/json",
-    cacheControlMaxAge: 60
-  });
-}
-
 module.exports = async function handler(req, res) {
-  setCorsHeaders(req, res, "GET, POST, OPTIONS");
+  setCorsHeaders(req, res, "GET, OPTIONS");
   res.setHeader("Cache-Control", "no-store");
 
   if (req.method === "OPTIONS") {
@@ -79,37 +52,9 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  if (req.method === "POST") {
-    if (!process.env.SHIZUOKA_FUJI3776_EDIT_TOKEN) {
-      return res.status(503).json({ error: "The edit token is not configured." });
-    }
-
-    if (!hasBlobConfiguration()) {
-      return res.status(503).json({ error: "Vercel Blob is not configured." });
-    }
-
-    if (!isAuthorized(req)) {
-      return res.status(401).json({ error: "Invalid edit token." });
-    }
-
-    const validated = validateValue(req.body);
-    if (validated.error) {
-      return res.status(400).json({ error: validated.error });
-    }
-
-    try {
-      await writeValue(validated.value);
-      return res.status(200).json(validated.value);
-    } catch (error) {
-      console.error("Failed to update shizuoka-fuji3776 value", error);
-      return res.status(500).json({ error: "Failed to save the new value." });
-    }
-  }
-
-  res.setHeader("Allow", "GET, POST, OPTIONS");
+  res.setHeader("Allow", "GET, OPTIONS");
   return res.status(405).json({ error: "Method not allowed." });
 };
 
 module.exports.hasBlobConfiguration = hasBlobConfiguration;
-module.exports.isAuthorized = isAuthorized;
 module.exports.readValue = readValue;

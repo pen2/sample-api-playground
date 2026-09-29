@@ -6,8 +6,6 @@ Vercel で動く JSON API サンプルです。
 
 - `GET /api/now`
 - `GET /api/shizuoka-fuji3776`
-- `POST /api/shizuoka-fuji3776`（編集トークンが必要）
-- `/tool/shizuoka-fuji3776/`（値の編集ページ）
 - `/` にアクセスすると `/api/now` にリダイレクトします
 
 ブラウザからのアクセスは、次の Origin に対して CORS を許可しています。
@@ -30,13 +28,7 @@ Vercel で動く JSON API サンプルです。
 }
 ```
 
-更新値を永続化するには、VercelのStorage画面でPrivate Blob storeを作成してこのプロジェクトへ接続します。次に、VercelのEnvironment Variablesへ十分に長いランダム値を次の名前で追加します。
-
-```text
-SHIZUOKA_FUJI3776_EDIT_TOKEN
-```
-
-環境変数を追加した後は再デプロイが必要です。現在の期間限定ツールでは、編集ページのhidden入力に同じ値を埋め込んでいます。公開運用する場合は、hidden値を削除して認証方式を変更してください。
+値はPrivate Vercel Blobから読み取ります。編集ツールとPOST更新処理は停止済みです。
 
 ## Response
 
