@@ -5,8 +5,5 @@
   "description": "Minimal JSON APIs and editing tools deployed on Vercel.",
   "scripts": {
     "test": "node scripts/test-now.js && node scripts/test-shizuoka-fuji3776.js"
-  },
-  "dependencies": {
-    "@vercel/blob": "^2.8.0"
   }
 }

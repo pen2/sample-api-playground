@@ -28,7 +28,7 @@ Vercel で動く JSON API サンプルです。
 }
 ```
 
-値はPrivate Vercel Blobから読み取ります。編集ツールとPOST更新処理は停止済みです。
+値は固定レスポンスです。編集ツールとPOST更新処理は停止済みです。
 
 ## Response
 
