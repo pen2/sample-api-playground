@@ -18,7 +18,8 @@ async function readValue() {
 
   const result = await get(BLOB_PATHNAME, {
     access: "private",
-    useCache: false
+    useCache: false,
+    token: process.env.BLOB_READ_WRITE_TOKEN
   });
 
   if (!result) {
